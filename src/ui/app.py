@@ -18,7 +18,7 @@ from src.capabilities.memoization import get_daily_mindfulness_exercise
 
 def main() -> None:
     """Renders the A11y-compliant Streamlit frontend for the Mental Wellness Tracker."""
-    st.set_page_config(page_title="Mental Wellness Tracker", page_icon="🌿")
+    st.set_page_config(page_title="Mental Wellness Tracker")
     
     # 1. FDA/Medical Compliance Banner
     st.warning("Medical Disclaimer: This tool is an empathetic digital companion and NOT a licensed therapist or medical professional. If you are experiencing a crisis, please seek professional medical help immediately.")
@@ -62,7 +62,7 @@ def main() -> None:
                 
                 # Crisis router checks locally before any API calls
                 if detect_crisis(sanitized_input):
-                    st.error("🚨 **Emergency Support:** It sounds like you might be going through a very difficult time. Please reach out to a crisis hotline or a mental health professional immediately. You are not alone.")
+                    st.error("**Emergency Support:** It sounds like you might be going through a very difficult time. Please reach out to a crisis hotline or a mental health professional immediately. You are not alone.")
                 else:
                     # Circuit breaker handles rate limits gracefully and instantly
                     response = generate_wellness_response(sanitized_input, st.session_state)
