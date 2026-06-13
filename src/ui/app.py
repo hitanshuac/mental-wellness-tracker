@@ -43,7 +43,7 @@ def main():
                 st.error("It sounds like you might be going through a very difficult time. Please know that you are not alone. Please reach out to a crisis hotline or a mental health professional immediately.")
             else:
                 with st.spinner("Reflecting on your entry..."):
-                    response = generate_wellness_response(sanitized_input)
+                    response = generate_wellness_response(sanitized_input, st.session_state)
                     st.success("Analysis Complete")
                     st.write("### Insights and CBT Strategies")
                     st.write(response)
