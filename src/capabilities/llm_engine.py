@@ -25,8 +25,20 @@ SYSTEM_PROMPT_BASE: str = (
 @st.cache_data(ttl=3600, show_spinner=False)
 def _cached_llm_call(journal_entry: str, emotion: str, stress_level: int) -> str:
     """Memoized LLM generation that adapts to the SUDS scale and Affect Labeling."""
+    import os
     try:
-        api_key = st.secrets["GEMINI_API_KEY"]
+        # Hugging Face Docker Spaces inject secrets as environment variables.
+        # Local Streamlit uses secrets.toml.
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            try:
+                api_key = st.secrets["GEMINI_API_KEY"]
+            except Exception:
+                pass
+                
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY is missing from environment variables and secrets.")
+            
         client = genai.Client(api_key=api_key)
 
         # Dynamically inject the psychological context into the system prompt
