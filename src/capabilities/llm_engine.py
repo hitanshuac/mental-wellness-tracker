@@ -7,6 +7,7 @@ journal logs, it uncovers hidden stress triggers while maintaining privacy.
 """
 import streamlit as st
 import google.generativeai as genai
+import google.api_core.exceptions
 
 def generate_wellness_response(journal_entry: str) -> str:
     """
@@ -46,5 +47,12 @@ def generate_wellness_response(journal_entry: str) -> str:
             )
         )
         return response.text.strip()
-    except Exception:
-        return "I'm here for you, but I'm having trouble connecting right now. Please take a deep breath and try again."
+    except google.api_core.exceptions.InvalidArgument as e:
+        return f"Configuration Error: The API key may be invalid or the request was malformed. Details: {str(e)}"
+    except google.api_core.exceptions.ResourceExhausted:
+        return "The system is currently experiencing high traffic (Rate Limit). Please take a deep breath and try again in a few minutes."
+    except google.api_core.exceptions.PermissionDenied:
+        return "Access Denied: Please check if your API key has the correct permissions."
+    except Exception as e:
+        # Fallback for other unexpected errors
+        return f"I'm here for you, but an unexpected error occurred: {str(e)}"
