@@ -23,9 +23,11 @@ def log_error_to_json(error_type: str, component: str, message: str) -> bool:
     if os.path.exists(LOG_FILE_PATH):
         try:
             with open(LOG_FILE_PATH, "r", encoding="utf-8") as f:
-                logs = json.load(f)
-                if not isinstance(logs, list):
-                    logs = []
+                data = json.load(f)
+                if isinstance(data, dict) and "session_errors" in data:
+                    logs = data["session_errors"]
+                elif isinstance(data, list):
+                    logs = data
         except json.JSONDecodeError:
             logs = []
             

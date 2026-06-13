@@ -51,4 +51,9 @@ def main():
             st.warning("Please enter some text in your journal.")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        from src.capabilities.observability import log_error_to_json
+        log_error_to_json(type(e).__name__, "app_main_crash", str(e))
+        st.error(f"A critical system error occurred: {str(e)}")
