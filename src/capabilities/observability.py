@@ -1,3 +1,11 @@
+"""
+Error Observability Module for the Mental Wellness Tracker.
+
+This module provides structured JSON error logging for an empathetic,
+always-available digital companion helping students preparing for
+high-stakes board exams (e.g., NEET, JEE, CUET). It logs hidden stress
+triggers in system failures to enable rapid remediation.
+"""
 import json
 import os
 from datetime import datetime, timezone

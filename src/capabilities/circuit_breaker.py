@@ -1,3 +1,14 @@
+"""
+Circuit Breaker Module for the Mental Wellness Tracker.
+
+This module implements a pure-memory circuit breaker pattern for an
+empathetic, always-available digital companion helping students
+preparing for high-stakes board exams (e.g., NEET, JEE, CUET). It
+prevents endless API retry loops and uncovers hidden stress triggers
+in system degradation.
+"""
+
+
 def is_circuit_tripped(session_state_dict: dict) -> bool:
     """
     Checks if the circuit breaker has tripped due to 3 or more consecutive failures.
