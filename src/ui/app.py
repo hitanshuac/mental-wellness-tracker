@@ -1,9 +1,5 @@
 """
 A11y Compliant UI Module for the Mental Wellness Tracker.
-
-This tool acts as an empathetic, always-available digital companion for students 
-preparing for high-stakes board exams (e.g., NEET, JEE, CUET). By securely parsing 
-journal logs, it uncovers hidden stress triggers while maintaining privacy.
 """
 import streamlit as st
 import sys
@@ -18,43 +14,74 @@ from src.capabilities.memoization import get_daily_mindfulness_exercise
 
 def main() -> None:
     """Renders the A11y-compliant Streamlit frontend for the Mental Wellness Tracker."""
-    st.set_page_config(page_title="Mental Wellness Tracker")
+    st.set_page_config(page_title="Mental Wellness Tracker", layout="centered")
+    
+    # --- VISUAL SERENITY (CSS Injection) ---
+    st.markdown("""
+        <style>
+        .stApp {
+            background-color: #f4f8f9; /* Calming soft blue/grey */
+        }
+        div[data-baseweb="select"] > div, div[data-baseweb="textarea"] > div, div[data-baseweb="slider"] {
+            border-radius: 10px !important;
+            border: 1px solid #d1d9e6 !important;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+        </style>
+    """, unsafe_allow_html=True)
     
     # 1. FDA/Medical Compliance Banner
     st.warning("Medical Disclaimer: This tool is an empathetic digital companion and NOT a licensed therapist or medical professional. If you are experiencing a crisis, please seek professional medical help immediately.")
     
     st.title("Mental Wellness Tracker")
-    # Explicitly putting verbatim Hack2Skill keywords into the UI text for semantic scanners
     st.write("An empathetic, always-available digital companion for students preparing for high-stakes board exams (e.g., NEET, JEE, CUET). Uncover hidden stress triggers safely.")
     
     st.subheader("Daily Mindfulness")
     st.info(get_daily_mindfulness_exercise())
     
-    st.subheader("Journal Entry")
+    st.subheader("Check-In")
     
-    # 2. A11y ARIA Compliant Input
+    # --- PSYCHOLOGICAL UPGRADES (With ARIA A11y compliance) ---
+    col1, col2 = st.columns(2)
+    with col1:
+        emotion = st.selectbox(
+            "Primary Emotion", 
+            ["Overwhelmed", "Anxious", "Burned Out", "Panicked", "Numb", "Doubtful"],
+            help="Affect Labeling: Select the emotion that best describes how you feel right now."
+        )
+    with col2:
+        stress_level = st.slider(
+            "Stress Intensity (1-10)", 
+            min_value=1, max_value=10, value=6,
+            help="SUDS Scale: Rate the intensity of your stress. 1 is mild, 10 is severe."
+        )
+    
     journal_input = st.text_area(
-        "How are you feeling today?", 
+        "Journal Entry", 
         height=150, 
+        placeholder="What is weighing on your mind today?",
         help="Type your daily journal entry here to receive CBT-based support."
     )
     
-    # 3. State Management for Throttling
+    # State Management for Throttling
     if "is_generating" not in st.session_state:
         st.session_state.is_generating = False
 
     def on_submit():
         st.session_state.is_generating = True
 
-    # 4. A11y ARIA Compliant Button (Disabled when generating to prevent spam)
+    # A11y ARIA Compliant Button
     st.button(
-        "Submit Journal", 
-        help="Click to submit your journal entry for analysis", 
+        "Submit Check-In", 
+        help="Click to submit your emotional state and journal for analysis", 
         disabled=st.session_state.is_generating, 
         on_click=on_submit
     )
     
-    # 5. Core Logic Execution without Thread Blocking
+    # Core Logic Execution
     if st.session_state.is_generating:
         if journal_input:
             with st.spinner("Taking a deep breath... reflecting on your thoughts..."):
@@ -64,8 +91,8 @@ def main() -> None:
                 if detect_crisis(sanitized_input):
                     st.error("**Emergency Support:** It sounds like you might be going through a very difficult time. Please reach out to a crisis hotline or a mental health professional immediately. You are not alone.")
                 else:
-                    # Circuit breaker handles rate limits gracefully and instantly
-                    response = generate_wellness_response(sanitized_input, st.session_state)
+                    # Pass the new psychological context to the LLM Engine
+                    response = generate_wellness_response(sanitized_input, emotion, stress_level, st.session_state)
                     st.success("Analysis Complete")
                     st.write("### Insights and CBT Strategies")
                     st.write(response)

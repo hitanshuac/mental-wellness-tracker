@@ -25,7 +25,7 @@ This solution uses a modular, defense-in-depth architecture built with Streamlit
 
 2. **Crisis Interception (Duty to Warn):** Before any LLM call, a local `detect_crisis()` pure function scans for high-risk keywords (e.g., "self-harm", "hopeless", "suicide"). If detected, the LLM is bypassed entirely and a hardcoded emergency hotline response is returned with zero latency.
 
-3. **CBT-Framed LLM Engine:** The core engine uses the Google Gemini 2.5 Flash model with a strict system prompt grounded in Cognitive Behavioral Therapy (CBT). The model is explicitly instructed that it is NOT a licensed therapist and must not diagnose -- it only provides actionable coping strategies to uncover hidden stress triggers.
+3. **CBT-Framed LLM Engine:** The core engine uses the Google Gemini 1.5 Flash model with a strict system prompt grounded in Cognitive Behavioral Therapy (CBT). The model is explicitly instructed that it is NOT a licensed therapist and must not diagnose -- it only provides actionable coping strategies to uncover hidden stress triggers.
 
 4. **Native Safety Filters:** Google Gemini's `safety_settings` are explicitly configured to block `HARM_CATEGORY_DANGEROUS_CONTENT` at the `BLOCK_MEDIUM_AND_ABOVE` threshold, providing medical compliance while avoiding false positives on therapeutic conversations.
 
