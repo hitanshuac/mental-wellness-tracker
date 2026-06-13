@@ -44,8 +44,20 @@ def generate_wellness_response(journal_entry: str, session_state: dict = None) -
         safety_settings = [
             {
                 "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                "threshold": "BLOCK_LOW_AND_ABOVE",
-            }
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE",
+            },
         ]
         
         response = model.generate_content(
@@ -56,8 +68,27 @@ def generate_wellness_response(journal_entry: str, session_state: dict = None) -
                 max_output_tokens=800
             )
         )
+        
+        # Validate response is not blocked or incomplete
+        if not response.candidates:
+            log_error_to_json("SafetyBlocked", "llm_engine", "Response had no candidates (fully blocked by safety filter).")
+            return fallback_message
+        
+        candidate = response.candidates[0]
+        finish_reason = getattr(candidate, "finish_reason", None)
+        
+        # finish_reason 1 = STOP (normal), 3 = SAFETY (blocked mid-gen)
+        if finish_reason is not None and finish_reason != 1:
+            log_error_to_json("SafetyTruncated", "llm_engine", f"Response truncated. finish_reason={finish_reason}")
+            return fallback_message
+        
+        result_text = response.text.strip()
+        if not result_text or len(result_text) < 30:
+            log_error_to_json("ShortResponse", "llm_engine", f"Response too short ({len(result_text)} chars): {result_text}")
+            return fallback_message
+        
         reset_api_failure(session_state)
-        return response.text.strip()
+        return result_text
     except google.api_core.exceptions.InvalidArgument as e:
         record_api_failure(session_state)
         log_error_to_json("InvalidArgument", "llm_engine", str(e))
