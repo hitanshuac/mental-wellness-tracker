@@ -37,7 +37,15 @@ def main() -> None:
         help="Type your daily journal entry here..."
     )
     
-    if st.button("Submit Journal", help="Click to submit your journal entry for analysis"):
+    if "is_generating" not in st.session_state:
+        st.session_state.is_generating = False
+
+    def on_submit():
+        st.session_state.is_generating = True
+
+    submit_pressed = st.button("Submit Journal", help="Click to submit your journal entry for analysis", disabled=st.session_state.is_generating, on_click=on_submit)
+    
+    if st.session_state.is_generating:
         if journal_input:
             sanitized_input = sanitize_journal_input(journal_input)
             
@@ -62,6 +70,8 @@ def main() -> None:
                     st.write(response)
         else:
             st.warning("Please enter some text in your journal.")
+            
+        st.session_state.is_generating = False
 
 if __name__ == "__main__":
     try:

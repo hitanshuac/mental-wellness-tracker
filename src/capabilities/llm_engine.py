@@ -34,6 +34,7 @@ def generate_wellness_response(journal_entry: str, session_state: dict = None) -
         "Frame actionable advice using Cognitive Behavioral Therapy (CBT) to uncover hidden stress triggers."
     )
     
+    fallback_message = "I hear you, and it is completely normal to feel overwhelmed right now, especially with exams like JEE/NEET looming. Let's ground ourselves using CBT: Take a deep breath. What is one small, actionable step you can control today? Remember, your worth is not defined by a single test score."
     try:
         model = genai.GenerativeModel(
             model_name="gemini-2.5-flash",
@@ -60,17 +61,16 @@ def generate_wellness_response(journal_entry: str, session_state: dict = None) -
     except google.api_core.exceptions.InvalidArgument as e:
         record_api_failure(session_state)
         log_error_to_json("InvalidArgument", "llm_engine", str(e))
-        return f"Configuration Error: The API key may be invalid or the request was malformed. Details: {str(e)}"
+        return fallback_message
     except google.api_core.exceptions.ResourceExhausted as e:
         record_api_failure(session_state)
         log_error_to_json("ResourceExhausted", "llm_engine", str(e))
-        return "The system is currently experiencing high traffic (Rate Limit). Please take a deep breath and try again in a few minutes."
+        return fallback_message
     except google.api_core.exceptions.PermissionDenied as e:
         record_api_failure(session_state)
         log_error_to_json("PermissionDenied", "llm_engine", str(e))
-        return "Access Denied: Please check if your API key has the correct permissions."
+        return fallback_message
     except Exception as e:
         record_api_failure(session_state)
         log_error_to_json(type(e).__name__, "llm_engine", str(e))
-        # Fallback for other unexpected errors
-        return f"I'm here for you, but an unexpected error occurred: {str(e)}"
+        return fallback_message
