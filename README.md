@@ -1,12 +1,3 @@
----
-title: Mental Wellness Tracker
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # Mental Wellness Tracker
 
 A simple, engaging tool that acts as an empathetic, always-available digital companion for students preparing for high-stakes board exams and competitive entrance tests (e.g., NEET, JEE, CUET, CAT, GATE, UPSC). 
