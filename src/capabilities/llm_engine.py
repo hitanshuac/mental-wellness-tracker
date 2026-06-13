@@ -52,7 +52,7 @@ def generate_wellness_response(journal_entry: str, session_state: dict = None) -
             safety_settings=safety_settings,
             generation_config=genai.types.GenerationConfig(
                 temperature=0.7,
-                max_output_tokens=250
+                max_output_tokens=800
             )
         )
         reset_api_failure(session_state)
