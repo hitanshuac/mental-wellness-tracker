@@ -25,6 +25,10 @@ def main() -> None:
         h1, h2, h3 {
             font-family: 'Helvetica Neue', sans-serif;
         }
+        /* Hide the misleading "Press Ctrl+Enter to apply" text */
+        div[data-testid="InputInstructions"] {
+            display: none !important;
+        }
         </style>
     """, unsafe_allow_html=True)
     
