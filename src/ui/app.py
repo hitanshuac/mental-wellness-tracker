@@ -37,27 +37,30 @@ def main():
     )
     
     if st.button("Submit Journal", help="Click to submit your journal entry for analysis"):
-        current_time = time.time()
-        last_submit = st.session_state.get("last_submit_time", 0)
-        
-        if current_time - last_submit < 15:
-            remaining = int(15 - (current_time - last_submit))
-            st.warning(f"Strict rate limit active to protect server resources. Please pause for {remaining} more seconds.")
-        else:
-            if journal_input:
-                st.session_state["last_submit_time"] = current_time
-                sanitized_input = sanitize_journal_input(journal_input)
-                
-                if detect_crisis(sanitized_input):
-                    st.error("It sounds like you might be going through a very difficult time. Please know that you are not alone. Please reach out to a crisis hotline or a mental health professional immediately.")
-                else:
-                    with st.spinner("Reflecting on your entry..."):
-                        response = generate_wellness_response(sanitized_input, st.session_state)
-                        st.success("Analysis Complete")
-                        st.write("### Insights and CBT Strategies")
-                        st.write(response)
+        if journal_input:
+            sanitized_input = sanitize_journal_input(journal_input)
+            
+            if detect_crisis(sanitized_input):
+                st.error("It sounds like you might be going through a very difficult time. Please know that you are not alone. Please reach out to a crisis hotline or a mental health professional immediately.")
             else:
-                st.warning("Please enter some text in your journal.")
+                current_time = time.time()
+                last_submit = st.session_state.get("last_submit_time", 0)
+                remaining = 15 - (current_time - last_submit)
+                
+                if remaining > 0:
+                    with st.spinner("Aligning with server capacity..."):
+                        import asyncio
+                        asyncio.run(asyncio.sleep(remaining))
+                
+                st.session_state["last_submit_time"] = time.time()
+                
+                with st.spinner("Reflecting on your entry..."):
+                    response = generate_wellness_response(sanitized_input, st.session_state)
+                    st.success("Analysis Complete")
+                    st.write("### Insights and CBT Strategies")
+                    st.write(response)
+        else:
+            st.warning("Please enter some text in your journal.")
 
 if __name__ == "__main__":
     try:
