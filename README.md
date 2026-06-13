@@ -1,6 +1,5 @@
 ---
 title: Mental Wellness Tracker
-emoji: 🚀
 colorFrom: blue
 colorTo: indigo
 sdk: docker

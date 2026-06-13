@@ -17,7 +17,7 @@ from src.capabilities.llm_engine import generate_wellness_response
 from src.capabilities.memoization import get_daily_mindfulness_exercise
 
 def main():
-    st.set_page_config(page_title="Mental Wellness Tracker", page_icon="🧠")
+    st.set_page_config(page_title="Mental Wellness Tracker")
     
     st.warning("Medical Disclaimer: This tool is an empathetic digital companion and NOT a licensed therapist or medical professional. If you are experiencing a crisis, please seek professional medical help immediately.")
     
