@@ -36,7 +36,7 @@ def log_error_to_json(error_type: str, component: str, message: str) -> bool:
                     logs = data["session_errors"]
                 elif isinstance(data, list):
                     logs = data
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
             logs = []
             
     logs.append(log_entry)
