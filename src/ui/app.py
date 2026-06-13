@@ -19,15 +19,10 @@ def main() -> None:
     # --- VISUAL SERENITY (CSS Injection) ---
     st.markdown("""
         <style>
-        .stApp {
-            background-color: #f4f8f9; /* Calming soft blue/grey */
-        }
         div[data-baseweb="select"] > div, div[data-baseweb="textarea"] > div, div[data-baseweb="slider"] {
             border-radius: 10px !important;
-            border: 1px solid #d1d9e6 !important;
         }
         h1, h2, h3 {
-            color: #2c3e50;
             font-family: 'Helvetica Neue', sans-serif;
         }
         </style>
